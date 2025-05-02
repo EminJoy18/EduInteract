@@ -76,7 +76,7 @@ def automated_google_form_generation(questions_for_form, subject):
         permissions_body = {
             'role': 'writer',  # Use 'reader' for view-only access
             'type': 'user',
-            'emailAddress': 'crce.9546.ce@gmail.com'  # Replace with your personal Google account email
+            'emailAddress': ''  # Replace with your personal Google account email
         }
 
         try:
