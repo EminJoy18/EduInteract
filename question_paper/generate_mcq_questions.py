@@ -8,7 +8,7 @@ def generate_mcqs(syllabus, modules_list, number_of_questions):
     # total_marks = 10
 
     model = "mistral-large-latest"
-    client = Mistral(api_key='BZKpd0qBpZuiMlzgrJ7brNdPlkOXiX9x')
+    client = Mistral(api_key='')
     messages = [
         {
                 "role": "system",
