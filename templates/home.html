@@ -1,0 +1,6 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="main-section">
+  <p style="font-size: 40px;">Hello, <strong>{{request.user.first_name}} {{request.user.last_name}}</strong></p>
+</div>
+{% endblock %}

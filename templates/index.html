@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduInteract</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patua+One&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,200" />
+  
+  <style>
+    body {
+      font-family: "Patua One", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 18px;
+    }
+    .title-bar {
+      height: 50px;
+      width: inherit;
+      padding-right: 20px;
+      padding-left: 20px;
+      border-bottom: 2px solid #36454F;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: "Patua One", serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 30px;
+      color: #36454F;
+    }
+
+    a {
+      text-decoration: none;
+      color: black;
+    }
+    .body {
+      display: flex;
+      flex-direction: row;
+      gap: 0px;
+      height: 90vh;
+    }
+    .nav-panel {
+      height: inherit;
+      width: 25%;
+      border-right: 2px solid #36454F;
+      padding-left: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 35px;
+      font-size: 18px;
+    }
+    .profile-card {
+      min-height: 70px;
+      height: auto;
+      overflow-wrap: break-word;
+      margin-right: 30px; 
+      max-width: 90%; 
+      width: auto;
+      border: 5px solid green;
+      border-radius: 10px;
+      margin-top: 40px;
+      padding-left: 40px;
+      font-family: "Patua One", serif;
+      /* font-weight: 400;
+      font-style: normal; */
+      font-size: 25px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      align-items: center;
+    }
+    .links-individual-original {
+      height: 40px; padding-left: 20px; margin-left: -20px; display: flex; flex-direction: row; align-items: center; gap: 10px;
+    }
+    .links-individual {
+      height: 40px; padding-left: 20px; margin-left: -20px; background-color: #43B3AE; border-radius: 25px; display: flex; flex-direction: row; align-items: center; gap: 10px;
+    }
+
+    .main-section {
+      padding-left: 60px;
+      font-family: "Patua One", serif;
+      font-size: 25px;
+    }
+    .input-field {
+      height: 30px;
+      border: 0px solid transparent;
+      border-bottom: 1px solid #36454F;
+      outline: none;
+      font: 0.8em sans-serif;
+    }
+    .submit-button {
+      background-color: #36454F;
+      color: aliceblue;
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="title-bar">
+    <p>EduInteract</p>
+    <p style="font-weight: 100;">{% now "jS F, Y" %}</p>
+  </div>
+
+  <div class="body">
+    <div class="nav-panel">
+      <!-- <div class="profile-card">
+        <img src="../profile_photos/IMG_20211229_083229.jpg" alt="profile photo" height="60px" width="60px" style="border-radius: ;">
+        <div class="profile-info">
+          <p>Heenakausar Pendhari</p>
+          <p style="font: 'Roboto', sans-serif; font-weight: 10; font-size: 17px; margin-top: -10px;">9546</p>
+          <p style="font: 'Roboto', sans-serif; font-weight: 10; font-size: 17px; margin-top: -10px;">BE COMPS B</p>
+        </div>
+      </div> -->
+      <div class="links" style="display: flex; flex-direction: column; gap: 20px; max-width: 90%; width: auto; padding-top: 20px; font-family: 'Roboto', sans-serif; font-weight: 400;">
+        <div id="home" class="links-individual-original">
+          <span class="material-symbols-outlined" style="margin-top: -3px;">home</span>
+          <a href="{% url 'home' %}">Home</a>
+        </div>
+        <div id="upload_syllabus" class="links-individual-original">
+          <span class="material-symbols-outlined" style="margin-top: -3px;">upload_file</span>
+          <a href="{% url 'upload_syllabus' %}">Upload Syllabus and COs</a>
+        </div>
+        <div id="view_uploaded" class="links-individual-original">
+          <span class="material-symbols-outlined" style="margin-top: -3px;">upload_file</span>
+          <a href="{% url 'view_uploaded' %}">View Uploaded Syllabus and COs</a>
+        </div>
+        <div id="question_paper" class="links-individual-original">
+          <span class="material-symbols-outlined" style="margin-top: -3px;">docs</span>
+          <a href="{% url 'question_paper' %}">Generate Question Paper</a>
+        </div>
+        <div id="gform" class="links-individual-original">
+          <span class="material-symbols-outlined" style="margin-top: -3px;">dynamic_form</span>
+          <a href="{% url 'generate_questions' %}">Generate Google Form</a>
+        </div>
+        <div id="lesson-plan" class="links-individual-original">
+          <span class="material-symbols-outlined" style="margin-top: -3px;">network_intelligence_history</span>
+          <a href="{% url 'generate_lesson_plan' %}">Lesson plan</a>
+        </div>
+      </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+    
+  </div>
+
+  <script>
+    // Wait for the DOM to be fully loaded
+    document.addEventListener("DOMContentLoaded", function() {
+      // Get all the individual links inside the nav-panel
+      const links = document.querySelectorAll('.nav-panel .links .links-individual-original');
+      
+      // Function to remove 'links-individual' class from all links
+      function removeLinksClass() {
+        links.forEach(link => {
+          link.classList.remove('links-individual');
+        });
+      }
+  
+      // Function to apply 'links-individual' class to a specific link
+      function applyActiveLink(link) {
+        link.classList.add('links-individual');
+      }
+  
+      // Set default active link to "Home" if no link is stored in localStorage
+      const activeLink = localStorage.getItem('activeLink');
+      if (!activeLink) {
+        const homeLink = document.getElementById('home');
+        applyActiveLink(homeLink); // Apply 'links-individual' to the "Home" link by default
+        localStorage.setItem('activeLink', 'home'); // Store the default link (Home)
+      } else {
+        // If there's a saved active link in localStorage, apply it
+        const savedLink = document.getElementById(activeLink);
+        if (savedLink) {
+          applyActiveLink(savedLink);
+        }
+      }
+  
+      // Loop through each link and add a click event listener
+      localStorage.removeItem('activeLink');
+      links.forEach(link => {
+        link.addEventListener('click', function() {
+          // Remove 'links-individual' class from all links
+          removeLinksClass();
+  
+          // Add 'links-individual' class to the clicked link
+          this.classList.add('links-individual');
+  
+          // Store the clicked link's ID in localStorage
+          localStorage.setItem('activeLink', this.id);
+        });
+      });
+    });
+
+
+
+
+
+    // FOR LOADING SCREEN
+    // Function to show the loading screen
+    function showLoadingScreen() {
+        document.getElementById("loading-overlay").style.display = 'flex';
+    }
+
+    // Function to hide the loading screen
+    function hideLoadingScreen() {
+        document.getElementById("loading-overlay").style.display = 'none';
+    }
+
+    // Handle the "Generate Google Form" button click
+    document.getElementById("generate-google-form").addEventListener("click", function() {
+        // Show loading screen
+        showLoadingScreen();
+
+        // Get the raw text from the Quill editor (plain text, no HTML)
+        const rawText = quill.getText().trim();  // `getText()` retrieves plain text
+
+        // Send the content to Django via AJAX
+        fetch("{% url 'generate_form' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify({
+                quill_content: rawText
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide the loading screen
+            hideLoadingScreen();
+
+            if (data.success) {
+                alert("Questions saved successfully!");
+            } else {
+                alert("Failed to save content.");
+            }
+        })
+        .catch(error => {
+            // Hide the loading screen
+            hideLoadingScreen();
+            console.error("Error:", error);
+            alert("Error saving content.");
+        });
+    });
+  </script>
+  
+
+</body>
+</html>

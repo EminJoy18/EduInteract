@@ -1,0 +1,44 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="main-section for-question_paper">
+    <br><br>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'upload_syllabus' %}">
+        {% csrf_token %}
+        <label for="course_id">Course ID  </label>
+        <input class="input-field" type="text" id="course_id" name="course_id" required>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label for="course_name">Course Name  </label>
+        <input class="input-field" type="text" id="course_name" name="course_name" required>
+        <br><br>
+        <label for="semester">Semester  </label>
+        <input class="input-field" type="number" id="semester" name="semester" min="1" max="8" required>
+        <br><br>
+        <label for="department">Department  </label>
+        <select class="input-field" id="department" name="department" required>
+            <option value="">Select Department</option>
+            <option value="Computer Engineering">Computer Engineering</option>
+            <option value="Artificial Intelligence and Data Science">Artificial Intelligence and Data Science</option>
+            <option value="Electronics and Computer Science">Electronics and Computer Science</option>
+            <option value="Mechanical Engineering">Mechanical Engineering</option>
+        </select>
+        <br><br>
+        <label for="syllabus_image">Syllabus Image  </label>
+        <input class="input-field" style="border: 0px solid transparent;" type="file" id="syllabus_image" name="syllabus_image" accept="image/*" required>
+        <br><br>
+        <!-- <label for="syllabus_image">Course Outcomes Image  </label>
+        <input class="input-field" style="border: 0px solid transparent;" type="file" id="syllabus_image" name="syllabus_image" accept="image/*" required>
+        <br><br> -->
+        <!-- <br><br> -->
+        <button class="submit-button" type="submit"> Upload Syllabus </button>
+    </form>
+    {% if messages %}
+    <div style="margin-bottom: 20px; padding: 10px; border: 1px solid green; background-color: #e9f8e9; color: green; border-radius: 10px; margin-top: 5px;">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %}

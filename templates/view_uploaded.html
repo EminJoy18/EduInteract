@@ -1,0 +1,113 @@
+{% extends 'index.html' %}
+{% block content %}
+<div class="main-section">
+    <br><br>
+    <form method="POST" enctype="multipart/form-data" action="{% url 'view_uploaded' %}">
+        {% csrf_token %}
+        <label for="subject">Subject &nbsp;</label>
+        <select class="input-field" id="subject" name="subject" required>
+            <option value="">Select Subject</option>
+            {% for course in courses %}
+                <option value="{{ course.CourseID }}">{{ course.Course_Name }}</option>
+            {% endfor %}
+        </select>
+        &nbsp;&nbsp;&nbsp;
+        <button class="submit-button" type="submit">View</button>
+    </form>    
+    <br>
+    
+    {% if syllabus_json %}
+    <div id="syllabus-container" style="font:0.7em sans-serif; display: flex; justify-content: center;">
+        <div style="width: 95%; max-width: 1200px;">
+            <!-- The table will be generated and inserted here by JavaScript -->
+        </div>
+    </div>
+    <br><br>
+    <script>
+        // JSON data passed from Django
+        const syllabusJson = {{ syllabus_json|safe }};
+
+        // Function to generate the syllabus table
+        function generateSyllabusTable(data) {
+            const container = document.querySelector("#syllabus-container > div");
+
+            // Create a table element
+            const table = document.createElement("table");
+
+            // Add table styles
+            table.style.width = "100%";  // Take full width of the container
+            table.style.borderCollapse = "collapse"; // Ensure borders collapse between cells
+            table.style.fontFamily = "Arial, sans-serif"; // Set a cleaner font
+            table.style.marginTop = "20px"; // Add top margin for spacing
+
+            // Add a header row
+            const headerRow = `
+                <thead style="background-color: #f2f2f2;">
+                    <tr>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Module Number</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Module Name</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Subtopics</th>
+                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Hours</th>
+                    </tr>
+                </thead>
+            `;
+            table.innerHTML = headerRow;
+
+            // Loop through modules and create rows for them
+            data.Modules.forEach((module) => {
+                const moduleRow = document.createElement("tr");
+                moduleRow.style.borderBottom = "1px solid #ddd"; // Add bottom border for rows
+                moduleRow.innerHTML = `
+                    <td style="border: 1px solid #ddd; padding: 8px;">${module["Module Number"]}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">${module["Module Name"]}</td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">
+                        ${generateSubtopicsTable(module.Subtopics)}
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 8px;">
+                        ${module["Hrs."] || module["Hrs"]}
+                    </td>
+                `;
+                table.appendChild(moduleRow);
+            });
+
+            // Append the table to the container
+            container.appendChild(table);
+        }
+
+        // Helper function to generate a subtopics table
+        function generateSubtopicsTable(subtopics) {
+            let subtopicsHTML = `<table style="width: 100%; border-collapse: collapse;">`;
+            subtopicsHTML += `
+                <thead>
+                    <tr>
+                        <th style="border: 1px solid #ddd; padding: 5px; background-color: #f9f9f9;">Unit Number</th>
+                        <th style="border: 1px solid #ddd; padding: 5px; background-color: #f9f9f9;">Topics</th>
+                    </tr>
+                </thead>
+            `;
+
+            subtopics.forEach((subtopic) => {
+                subtopicsHTML += `
+                    <tr>
+                        <td style="border: 1px solid #ddd; padding: 5px;">${subtopic["Unit Number"]}</td>
+                        <td style="border: 1px solid #ddd; padding: 5px;">
+                            <ul style="padding-left: 20px;">
+                                ${subtopic.Topics.map((topic) => `<li>${topic}</li>`).join("")}
+                            </ul>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            subtopicsHTML += `</table>`;
+            return subtopicsHTML;
+        }
+
+        // Generate the table on page load
+        generateSyllabusTable(syllabusJson);
+    </script>
+    {% endif %}
+
+</div>
+
+{% endblock %}

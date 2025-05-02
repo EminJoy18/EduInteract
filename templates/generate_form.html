@@ -1,0 +1,125 @@
+{% extends 'index.html' %}
+{% block content %}
+<head>
+    <!-- <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script> -->
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
+    <style>
+    .spinner {
+        display: none;
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #3498db;
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    </style>
+</head>
+<div class="main-section">
+    <br><br>
+    {% if messages %}
+    <div style="margin-bottom: 20px; padding: 10px; border: 1px solid green; background-color: #e9f8e9; color: green; border-radius: 10px; margin-top: 5px;">
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <form method="POST" enctype="multipart/form-data" action="{% url 'generate_questions' %}">
+        {% csrf_token %}
+        <label for="subject">Subject &nbsp;</label>
+        <select class="input-field" id="subject" name="subject" required>
+            <option value="">Select Subject</option>
+            {% for course in courses %}
+                <option value="{{ course.CourseID }}">{{ course.Course_Name }}</option>
+            {% endfor %}
+        </select>
+        <br><br>
+        <label for="modules">Modules &nbsp;</label>
+        {% for i in numbers %}
+            <input type="checkbox" name="modules" value="Module{{ i }}" style="font: 0.7em sans-serif;"> Module {{ i }} &nbsp;
+        {% endfor %}
+        <br><br>
+        <label for="number_of_questions">Number of Questions &nbsp;</label>
+        <input class="input-field" type="number" id="number_of_questions" name="number_of_questions" required>
+        <br><br>
+        <button class="submit-button" type="submit">Generate MCQ Questions</button>
+    </form>
+    <br><br>
+    <div id="editor" style="min-width: 500px; height: auto; width: 1000px; padding: 15px;">
+        <!-- <p>Hello World</p> -->
+    </div>
+    <br><br>
+    <center><button id="generate-google-form" class="submit-button">Generate Google Form</button></center>
+    <br><br><br>
+    <!-- <script>
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['bold', 'italic', 'underline'],
+                    ['link']
+                ]
+            }
+        });
+
+        {% if quill_content %}
+            quill.root.innerHTML = "{{ quill_content|safe }}";
+            // quill.clipboard.dangerouslyPasteHTML("{{ quill_content|safe }}");
+        {% endif %}
+    </script> -->
+    <script>
+        const quill = new Quill('#editor', {
+          theme: 'snow'
+        });
+
+        {% if quill_content %}
+            // document.getElementById('editor').innerHTML = "{{ quill_content|safe }}";
+            quill.clipboard.dangerouslyPasteHTML("{{ quill_content|safe }}");
+        {% endif %}
+
+
+         // Handle the "Generate Google Form" button click
+        document.getElementById("generate-google-form").addEventListener("click", function() {
+            // Get the raw text from the Quill editor (plain text, no HTML)
+            const rawText = quill.getText().trim();  // `getText()` retrieves plain text
+
+            // Send the content to Django via AJAX
+            fetch("{% url 'generate_form' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}",
+                },
+                body: JSON.stringify({
+                    quill_content: rawText
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("Questions saved successfully!");
+                } else {
+                    alert("Failed to save content.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                //alert("Error saving content.");
+            });
+        });
+    </script>
+</div>
+{% endblock %}

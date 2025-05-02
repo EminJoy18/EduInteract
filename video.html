@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Proctoring Application</title>
+    <style>
+        /* Basic layout for video and exam side by side */
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+        }
+        #video-container {
+            width: 70%;
+            float: left;
+            background-color: #f0f0f0;
+            padding: 10px;
+        }
+        #exam-container {
+            width: 30%;
+            float: right;
+            padding: 10px;
+        }
+        #exam-frame {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+        }
+        #proctor-video {
+            width: 100%;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+        video {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Container for video feeds -->
+    <div id="video-container">
+        <h3>Video Conference</h3>
+        <!-- Participant videos will be appended here -->
+    </div>
+
+    <!-- Container for exam content -->
+    <div id="exam-container">
+        <h3>Exam Paper</h3>
+        <iframe id="exam-frame" src="exam.html"></iframe>
+    </div>
+
+    <!-- Load Twilio Video SDK -->
+    <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.3.0/twilio-video.min.js"></script>
+    <script>
+        // Replace with your actual Twilio token (generated server-side)
+        const twilioToken = 'SK50760ccc0046fd7fb54f7be961525d70';
+        const roomName = 'exam-room';
+
+        // Initialize Twilio Video
+        Twilio.Video.connect(twilioToken, { name: roomName })
+            .then(room => {
+                console.log('Connected to room:', room.name);
+
+                // Handle local participant (examinee) video
+                room.localParticipant.tracks.forEach(publication => {
+                    if (publication.track.kind === 'video') {
+                        const trackElement = publication.track.attach();
+                        document.getElementById('video-container').appendChild(trackElement);
+                    }
+                });
+
+                // Handle remote participants (e.g., proctor)
+                room.on('participantConnected', participant => {
+                    console.log(`Participant "${participant.identity}" connected`);
+                    participant.tracks.forEach(publication => {
+                        if (publication.isSubscribed) {
+                            const track = publication.track;
+                            document.getElementById('video-container').appendChild(track.attach());
+                        }
+                    });
+                    participant.on('trackSubscribed', track => {
+                        document.getElementById('video-container').appendChild(track.attach());
+                    });
+                });
+            })
+            .catch(err => {
+                console.error('Error connecting to Twilio Video:', err);
+            });
+
+        // Monitor tab switching with Page Visibility API
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                console.log('User switched tabs or minimized window');
+                // Add your logic here, e.g., alert the proctor or pause the exam
+                alert('Warning: Tab switching detected!');
+            } else {
+                console.log('User returned to the exam tab');
+            }
+        });
+
+        // Access webcam for proctoring (additional monitoring)
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                const videoElement = document.createElement('video');
+                videoElement.id = 'proctor-video';
+                videoElement.srcObject = stream;
+                videoElement.muted = true; // Mute to avoid feedback
+                document.getElementById('video-container').appendChild(videoElement);
+                videoElement.play();
+                console.log('Webcam accessed for proctoring');
+            })
+            .catch(err => {
+                console.error('Error accessing webcam:', err);
+                alert('Webcam access denied. Proctoring requires webcam permission.');
+            });
+    </script>
+</body>
+</html>
