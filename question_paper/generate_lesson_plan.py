@@ -12,7 +12,7 @@ def lesson_plan(syllabus, start_date, end_date):
     week_difference = (end_date - start_date).days // 7
 
     model = "mistral-large-latest"
-    client = Mistral(api_key='BZKpd0qBpZuiMlzgrJ7brNdPlkOXiX9x')
+    client = Mistral(api_key='')
     messages = [
         {
                 "role": "system",
